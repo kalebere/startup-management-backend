@@ -1,7 +1,8 @@
 fastapi
 uvicorn
-google-generativeai
+google-genai
 pymongo
 bcrypt
 python-jose[cryptography]
 passlib[bcrypt]
+google
