@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status,Depends
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import timedelta
 
 from ...schema import Login as Login_schema
@@ -9,6 +10,7 @@ from ...database import auth_collection
 from ...auth import verify_password,create_access_token,verify_access_token
 
 router = APIRouter()
+security = HTTPBearer()
 
 @router.post("/login")
 def login(user:Login_schema):
@@ -29,9 +31,11 @@ def login(user:Login_schema):
     
     return JSONResponse({"Success": True,"token":jwt_token},status_code=status.HTTP_200_OK)
 
-@router.post("/protected")
-def protected(token_data : auth_token_schema):
-    payload = verify_access_token(token_data.token)
+@router.get("/protected")
+def protected(credentials: HTTPAuthorizationCredentials = Depends(security)):
+
+    token = credentials.credentials 
+    payload = verify_access_token(token)
 
     if not payload:
         raise HTTPException(detail="Logged Out!",status_code=status.HTTP_401_UNAUTHORIZED)
