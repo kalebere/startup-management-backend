@@ -3,3 +3,5 @@ uvicorn
 google-generativeai
 pymongo
 bcrypt
+python-jose[cryptography]
+passlib[bcrypt]
